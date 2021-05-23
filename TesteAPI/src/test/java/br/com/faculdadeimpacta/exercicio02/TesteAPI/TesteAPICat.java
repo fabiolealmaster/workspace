@@ -10,32 +10,58 @@
 
 package br.com.faculdadeimpacta.exercicio02.TesteAPI;
 
+ 
 import org.junit.jupiter.api.Test;
 
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+
 
 
 public class TesteAPICat {
 	
 	@Test
-	public void cadastro() {
+	public void cadastroSucesso() {
 		String url = "https://api.thecatapi.com/v1/user/passwordlesssignup";
-		String corpo = "{\"email\": \"fabioleal@msn.com\", \"appDescription\": \"Exercicio de pos graduação\"}";
+		String corpo = "{\"email\": \"yugioh.parte3@gmail.com\", \"appDescription\": \"Exercicio de pos graduação\"}";
 		
-		//GIVEN - DADO QUE
-		Response response = given().contentType("application/jason").body(corpo).
-			when().post(url);
+		Response response = given()
+                .relaxedHTTPSValidation()
+                .body(corpo)
+                .with()
+                .contentType("application/json")
+                .when()
+                .post(url);
+		
+		response.then().statusCode(200);
 			
-			response.then().statusCode(200).body("message", containsString("SUCESS"));
-			
-			System.out.println("RETORNO => " + response.body().asString());
+		System.out.println("RETORNO => " + response.body().asString());
 	
 		
 	}
 	
+	@Test
+	public void cadastroFalha() {
+		String url = "https://api.thecatapi.com/v1/user/passwordlesssignup";
+		String corpo = "{\"email\": \"fabioleal@msn.com\", \"appDescription\": \"Exercicio de pos graduação\"}";
+		
+		Response response = given()
+                .relaxedHTTPSValidation()
+                .body(corpo)
+                .with()
+                .contentType("application/json")
+                .when()
+                .post(url);
+		
+		response.then().statusCode(400);
+			
+		System.out.println("RETORNO => " + response.body().asString());
+	
+		
+	}
 
+	
+	
 }
