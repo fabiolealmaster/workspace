@@ -24,8 +24,11 @@ public class TesteAPICat {
 	
 	@Test
 	public void cadastroSucesso() {
+		
+		//Teste de sucesso para cadastro de novo usuario (aceita o envio dos mesmos dados até 2 vezes, da terceira tentativa em diante
+		//a API retorna falha pois o email já foi enviado "várias vezes"). Este teste é para obter statuscode=200.
 		String url = "https://api.thecatapi.com/v1/user/passwordlesssignup";
-		String corpo = "{\"email\": \"yugioh.parte3@gmail.com\", \"appDescription\": \"Exercicio de pos graduação\"}";
+		String corpo = "{\"email\": \"fabio.leal@aluno.faculdadeimpacta.com.br\", \"appDescription\": \"Exercicio de pos graduação\"}";
 		
 		Response response = given()
                 .relaxedHTTPSValidation()
@@ -35,15 +38,18 @@ public class TesteAPICat {
                 .when()
                 .post(url);
 		
-		response.then().statusCode(200);
+		response.then().assertThat().statusCode(200);
 			
-		System.out.println("RETORNO => " + response.body().asString());
+		System.out.println("RETORNO SUCESSO => " + response.body().asString());
 	
 		
 	}
 	
 	@Test
 	public void cadastroFalha() {
+		
+		//O teste de falha consiste na tentativa de postar um email que já foi postado mais de 2 vezes para que seja testada a falha
+		//e tenhamos o statuscode=400
 		String url = "https://api.thecatapi.com/v1/user/passwordlesssignup";
 		String corpo = "{\"email\": \"fabioleal@msn.com\", \"appDescription\": \"Exercicio de pos graduação\"}";
 		
@@ -55,9 +61,9 @@ public class TesteAPICat {
                 .when()
                 .post(url);
 		
-		response.then().statusCode(400);
+		response.then().assertThat().statusCode(400);
 			
-		System.out.println("RETORNO => " + response.body().asString());
+		System.out.println("RETORNO FALHA => " + response.body().asString());
 	
 		
 	}
